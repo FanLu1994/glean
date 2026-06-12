@@ -6,6 +6,7 @@ import { QuoteCard } from "@/components/quote-card";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+export const dynamic = "force-dynamic";
 export const revalidate = 3600;
 
 interface PageProps {

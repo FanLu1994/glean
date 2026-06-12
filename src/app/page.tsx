@@ -4,6 +4,7 @@ import { dailyQuotes } from "@/db/schema";
 import { desc, eq, lt } from "drizzle-orm";
 import { QuoteCard } from "@/components/quote-card";
 
+export const dynamic = "force-dynamic";
 export const revalidate = 3600; // revalidate every hour
 
 async function getTodayQuote() {

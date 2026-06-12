@@ -6,10 +6,12 @@ import { subscribers } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { sendVerificationEmail } from "@/lib/email";
 
+type SubscribeState = { error: string; success?: undefined } | { success: string; error?: undefined };
+
 export async function subscribeAction(
-  _prevState: { error?: string; success?: string },
+  _prevState: SubscribeState,
   formData: FormData
-) {
+): Promise<SubscribeState> {
   const email = formData.get("email") as string;
   const locale = formData.get("locale") as string;
 

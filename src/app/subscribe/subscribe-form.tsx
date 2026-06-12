@@ -4,8 +4,10 @@
 import { useActionState } from "react";
 import { subscribeAction } from "@/actions/subscribe";
 
+type SubscribeState = { error: string; success?: undefined } | { success: string; error?: undefined };
+
 export function SubscribeForm() {
-  const [state, formAction, isPending] = useActionState(subscribeAction, {});
+  const [state, formAction, isPending] = useActionState<SubscribeState, FormData>(subscribeAction, {} as SubscribeState);
 
   return (
     <form action={formAction} className="space-y-4">

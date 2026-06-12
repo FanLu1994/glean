@@ -4,6 +4,7 @@ import { dailyQuotes } from "@/db/schema";
 import { desc } from "drizzle-orm";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
 export const revalidate = 3600;
 
 interface GroupedQuotes {
