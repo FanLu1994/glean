@@ -23,67 +23,63 @@ export function QuoteCard({
   });
 
   return (
-    <article className="mx-auto max-w-4xl space-y-20 lg:space-y-24">
-      <header className="grid grid-cols-1 gap-7 border-t border-line/70 pt-8 md:grid-cols-[1fr_auto] md:items-end">
-        <div className="space-y-2">
-          <p className="text-[0.7rem] tracking-[0.24em] text-cinnabar">
-            今日拾句
-          </p>
-          <p className="text-2xl leading-tight md:text-3xl">
-            {dateDisplayZh}
-          </p>
-        </div>
-        <div className="space-y-1 text-left md:text-right">
-          <p className="font-[family-name:var(--font-serif-en)] text-sm italic text-ink-light">
-            {dateDisplayEn}
-          </p>
-          <p className="text-sm text-ink-light">
-            {quote.source} <span className="mx-2 text-line">/</span>
-            <span className="text-seal">{quote.author}</span>
-          </p>
-        </div>
-      </header>
-
-      <section className="py-10 md:py-20">
+    <article className="mx-auto max-w-4xl space-y-14 lg:space-y-16">
+      <section className="py-12 md:py-20">
         <div className="mx-auto max-w-3xl px-0 text-center">
           <blockquote className="classical-text">{quote.quoteZh}</blockquote>
           <p className="pinyin-text mx-auto mt-10 max-w-2xl text-base leading-8">
             {quote.pinyin}
           </p>
+          <div className="mx-auto mt-10 flex max-w-2xl flex-col items-center gap-2 text-xs leading-6 text-ink-light/65 sm:flex-row sm:justify-center sm:gap-4">
+            <span className="tracking-[0.2em] text-ink-light/70">今日拾句</span>
+            <time
+              dateTime={quote.date}
+              className="font-[family-name:var(--font-serif-en)] italic"
+            >
+              {dateDisplayEn}
+            </time>
+            <span>
+              {dateDisplayZh}
+              <span className="mx-2 text-line">/</span>
+              {quote.source}
+              <span className="mx-2 text-line">/</span>
+              <span className="text-ink-light">{quote.author}</span>
+            </span>
+          </div>
         </div>
       </section>
 
-      <section className="grid grid-cols-1 gap-14 border-t border-line/70 pt-12 lg:grid-cols-[1.08fr_0.92fr] lg:gap-16">
+      <section className="mx-auto max-w-3xl space-y-12 pt-6">
         <div className="space-y-5">
-          <p className="text-sm tracking-[0.18em] text-cinnabar">
+          <p className="text-sm tracking-[0.16em] text-ink-light/70">
             释义
             <span className="ml-3 font-[family-name:var(--font-serif-en)] text-xs italic tracking-normal text-ink-light">
               Explanation
             </span>
           </p>
-          <p className="max-w-[58ch] text-lg leading-9 md:text-xl">
+          <p className="text-lg leading-9 md:text-xl">
             {quote.explanationZh}
           </p>
-          <p className="max-w-[66ch] font-[family-name:var(--font-serif-en)] text-base leading-8 text-ink-light">
+          <p className="font-[family-name:var(--font-serif-en)] text-base leading-8 text-ink-light/80">
             {quote.explanationEn}
           </p>
         </div>
-        <div className="space-y-5 lg:pt-12">
-            <p className="text-sm tracking-[0.18em] text-cinnabar">
-              使用场景
-              <span className="ml-3 font-[family-name:var(--font-serif-en)] text-xs italic tracking-normal text-ink-light">
-                Usage
-              </span>
-            </p>
-            <p className="text-base leading-8">{quote.scenarioZh}</p>
-            <p className="font-[family-name:var(--font-serif-en)] text-sm leading-7 text-ink-light">
-              {quote.scenarioEn}
-            </p>
+        <div className="space-y-4 pt-4">
+          <p className="text-sm tracking-[0.16em] text-ink-light/70">
+            使用场景
+            <span className="ml-3 font-[family-name:var(--font-serif-en)] text-xs italic tracking-normal text-ink-light">
+              Usage
+            </span>
+          </p>
+          <p className="text-base leading-8 text-ink/85">{quote.scenarioZh}</p>
+          <p className="font-[family-name:var(--font-serif-en)] text-sm leading-7 text-ink-light/80">
+            {quote.scenarioEn}
+          </p>
         </div>
       </section>
 
       {showActions && (
-        <div className="flex flex-col items-stretch justify-between gap-4 border-t border-line/70 pt-8 text-sm sm:flex-row sm:items-center">
+        <div className="mx-auto flex max-w-3xl flex-col items-stretch justify-between gap-4 pt-4 text-sm sm:flex-row sm:items-center">
           {previousDate ? (
             <Link
               href={`/archive/${previousDate}`}
@@ -100,7 +96,7 @@ export function QuoteCard({
             <ShareButton text={quote.quoteZh} />
             <Link
               href="/subscribe"
-              className="border border-ink/15 bg-transparent px-6 py-3 text-center text-ink hover:border-cinnabar/35 hover:text-cinnabar"
+              className="px-1 py-3 text-center text-ink-light hover:text-ink"
             >
               订阅邮件
             </Link>

@@ -3,27 +3,26 @@ import Link from "next/link";
 
 export function Nav() {
   return (
-    <nav className="w-full max-w-5xl mx-auto px-5 sm:px-8 lg:px-10 py-8 flex items-center justify-between">
+    <nav className="mx-auto flex w-full max-w-5xl items-center justify-between px-5 py-7 text-sm sm:px-8 lg:px-10">
       <Link
         href="/"
-        className="group flex items-baseline gap-3 text-base font-semibold tracking-[0.12em] hover:text-cinnabar"
+        className="group flex items-baseline gap-3 font-semibold tracking-[0.16em] text-ink/80 hover:text-ink"
       >
         <span>拾句</span>
-        <span className="h-px w-7 bg-ink/20 group-hover:bg-cinnabar" />
-        <span className="font-[family-name:var(--font-serif-en)] text-xs font-normal tracking-[0.28em] text-ink-light uppercase">
+        <span className="font-[family-name:var(--font-serif-en)] text-[0.65rem] font-normal uppercase tracking-[0.24em] text-ink-light/70">
           Glean
         </span>
       </Link>
-      <div className="flex items-center gap-2 text-sm">
+      <div className="flex items-center gap-4 text-xs text-ink-light/70">
         <Link
           href="/archive"
-          className="px-2 py-2 text-ink-light hover:text-cinnabar"
+          className="py-2 hover:text-ink"
         >
           归档
         </Link>
         <Link
           href="/subscribe"
-          className="px-2 py-2 text-ink-light hover:text-cinnabar"
+          className="py-2 hover:text-ink"
         >
           订阅
         </Link>
