@@ -53,7 +53,7 @@ export default async function ArchivePage() {
 
   if (archive.length === 0) {
     return (
-      <div className="mx-auto max-w-3xl border-y border-ink/15 py-20 text-center">
+      <div className="mx-auto max-w-3xl border-t border-ink/15 py-24 text-center">
         <p className="text-xs tracking-[0.34em] text-cinnabar">ARCHIVE</p>
         <h1 className="mt-6 text-4xl">暂无归档内容</h1>
         <p className="mt-4 font-[family-name:var(--font-serif-en)] text-ink-light">
@@ -64,13 +64,15 @@ export default async function ArchivePage() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl space-y-12">
-      <header className="grid grid-cols-1 gap-6 border-y border-ink/15 py-10 md:grid-cols-[0.7fr_1.3fr] md:items-end">
+    <div className="mx-auto max-w-4xl space-y-16">
+      <header className="grid grid-cols-1 gap-8 border-t border-line/70 pt-8 md:grid-cols-[0.72fr_1.28fr] md:items-end">
         <div>
-          <p className="text-xs tracking-[0.34em] text-cinnabar">ARCHIVE</p>
-          <h1 className="mt-4 text-5xl leading-none md:text-7xl">归档</h1>
+          <p className="text-[0.7rem] tracking-[0.24em] text-cinnabar">
+            Archive
+          </p>
+          <h1 className="mt-4 text-4xl leading-tight md:text-5xl">归档</h1>
         </div>
-        <p className="max-w-[58ch] font-[family-name:var(--font-serif-en)] text-base leading-8 text-ink-light md:justify-self-end">
+        <p className="max-w-[54ch] font-[family-name:var(--font-serif-en)] text-base leading-8 text-ink-light md:justify-self-end">
           A quiet index of classical sentences, ordered by date for slow
           return visits.
         </p>
@@ -79,28 +81,28 @@ export default async function ArchivePage() {
       {archive.map((group) => (
         <section
           key={group.month}
-          className="grid grid-cols-1 gap-5 md:grid-cols-[12rem_1fr]"
+          className="grid grid-cols-1 gap-6 md:grid-cols-[9rem_1fr]"
         >
-          <h2 className="text-sm font-semibold tracking-[0.28em] text-cinnabar">
+          <h2 className="text-sm tracking-[0.14em] text-cinnabar">
             {group.label}
           </h2>
-          <div className="divide-y divide-ink/10 border-y border-ink/10">
+          <div className="divide-y divide-line/70 border-t border-line/70">
             {group.quotes.map((q) => (
               <Link
                 key={q.date}
                 href={`/archive/${q.date}`}
-                className="group block py-5 hover:bg-cream/45 md:px-5"
+                className="group block py-6"
               >
                 <div className="grid grid-cols-[1fr_auto] items-start gap-4">
                   <div className="flex-1 min-w-0">
-                    <p className="text-2xl leading-relaxed tracking-[0.08em] group-hover:text-cinnabar md:text-3xl">
+                    <p className="text-xl leading-relaxed tracking-[0.06em] group-hover:text-cinnabar md:text-2xl">
                       {q.quoteZh.split("，")[0]}
                       {q.quoteZh.includes("，") ? "，" : ""}
                       {q.quoteZh.split("，")[1]?.split("。")[0]
                         ? q.quoteZh.split("，")[1].split("。")[0] + "。"
                         : ""}
                     </p>
-                    <p className="text-xs text-ink-light mt-1">
+                    <p className="text-xs text-ink-light mt-1.5">
                       {q.source} · {q.author}
                     </p>
                   </div>

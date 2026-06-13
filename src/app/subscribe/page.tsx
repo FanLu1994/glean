@@ -3,10 +3,12 @@ import { SubscribeForm } from "./subscribe-form";
 
 export default function SubscribePage() {
   return (
-    <div className="mx-auto grid max-w-5xl grid-cols-1 gap-10 lg:grid-cols-[1fr_0.86fr] lg:items-start">
-      <section className="border-y border-ink/15 py-10 lg:py-16">
-        <p className="text-xs tracking-[0.34em] text-cinnabar">SUBSCRIBE</p>
-        <h1 className="mt-5 max-w-[10ch] text-5xl leading-tight md:text-7xl">
+    <div className="mx-auto grid max-w-4xl grid-cols-1 gap-16 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+      <section className="border-t border-line/70 pt-8 lg:pt-10">
+        <p className="text-[0.7rem] tracking-[0.24em] text-cinnabar">
+          Subscribe
+        </p>
+        <h1 className="mt-5 max-w-[11ch] text-4xl leading-tight md:text-5xl">
           每日一句，慢读入心
         </h1>
         <p className="mt-7 max-w-[58ch] text-base leading-8 text-ink-light">
@@ -17,7 +19,7 @@ export default function SubscribePage() {
           practical context.
         </p>
       </section>
-      <section className="book-card bg-cream p-6 md:p-8 lg:mt-12">
+      <section className="border-t border-line/70 pt-8 lg:mt-10">
         <SubscribeForm />
       </section>
     </div>

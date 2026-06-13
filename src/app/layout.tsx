@@ -24,7 +24,7 @@ export default function RootLayout({
     <html lang="zh-CN">
       <body className="min-h-[100dvh] flex flex-col">
         <Nav />
-        <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-10 lg:py-16">
+        <main className="flex-1 w-full max-w-5xl mx-auto px-5 sm:px-8 lg:px-10 py-10 lg:py-16">
           {children}
         </main>
         <Footer />

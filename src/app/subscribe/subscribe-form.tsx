@@ -26,7 +26,7 @@ export function SubscribeForm() {
           name="email"
           placeholder="your@email.com"
           required
-          className="w-full border border-ink/20 bg-rice px-4 py-4 font-[family-name:var(--font-serif-en)] text-ink outline-none focus:border-cinnabar"
+          className="w-full border border-line/80 bg-transparent px-4 py-4 font-[family-name:var(--font-serif-en)] text-ink outline-none focus:border-cinnabar"
         />
         <p className="text-xs leading-6 text-ink-light">
           仅用于每日拾句和订阅确认，不发送营销邮件。
@@ -36,7 +36,7 @@ export function SubscribeForm() {
       <div className="space-y-2">
         <p className="text-sm text-ink">语言 · Language</p>
         <div className="grid grid-cols-2 gap-3">
-          <label className="flex cursor-pointer items-center justify-center gap-2 border border-ink/15 bg-rice px-4 py-3">
+          <label className="flex cursor-pointer items-center justify-center gap-2 border border-line/80 bg-transparent px-4 py-3">
             <input
               type="radio"
               name="locale"
@@ -46,7 +46,7 @@ export function SubscribeForm() {
             />
             <span className="text-sm">中文</span>
           </label>
-          <label className="flex cursor-pointer items-center justify-center gap-2 border border-ink/15 bg-rice px-4 py-3">
+          <label className="flex cursor-pointer items-center justify-center gap-2 border border-line/80 bg-transparent px-4 py-3">
             <input
               type="radio"
               name="locale"
@@ -61,7 +61,7 @@ export function SubscribeForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="w-full bg-cinnabar px-5 py-4 text-cream hover:bg-cinnabar-dark disabled:opacity-50"
+        className="w-full border border-ink/15 bg-transparent px-5 py-4 text-ink hover:border-cinnabar/35 hover:text-cinnabar disabled:opacity-50"
       >
         {isPending ? "提交中..." : "订阅 · Subscribe"}
       </button>
@@ -72,7 +72,7 @@ export function SubscribeForm() {
         </p>
       )}
       {state.success && (
-        <p className="border border-ink/15 bg-rice px-4 py-3 text-sm leading-6 text-ink-light">
+        <p className="border border-line bg-cream/55 px-4 py-3 text-sm leading-6 text-ink-light">
           {state.success}
         </p>
       )}
