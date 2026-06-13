@@ -1,24 +1,8 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
-import { Noto_Serif_SC, Crimson_Pro } from "next/font/google";
 import "./globals.css";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
-
-const notoSerifSC = Noto_Serif_SC({
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
-  variable: "--font-serif-cn",
-  display: "swap",
-});
-
-const crimsonPro = Crimson_Pro({
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
-  variable: "--font-serif-en",
-  style: ["normal", "italic"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "拾句 · Glean — 每日一句古文",
@@ -37,10 +21,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="zh-CN" className={`${notoSerifSC.variable} ${crimsonPro.variable}`}>
-      <body className="min-h-screen flex flex-col">
+    <html lang="zh-CN">
+      <body className="min-h-[100dvh] flex flex-col">
         <Nav />
-        <main className="flex-1 w-full max-w-2xl mx-auto px-4 py-8">
+        <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-10 lg:py-16">
           {children}
         </main>
         <Footer />

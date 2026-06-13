@@ -23,6 +23,8 @@ interface ValidationResult {
   fixes?: Partial<GeneratedQuote>;
 }
 
+const DEEPSEEK_MODEL = process.env.DEEPSEEK_MODEL || "deepseek-chat";
+
 const SYSTEM_PROMPT = `你是一位精通中国古典文学的学者，擅长将古代智慧与现代生活联系起来。
 你生成的每一条古文引用都必须是原文，不能编造或改写。
 拼音必须使用带声调标记的标准拼音。
@@ -40,7 +42,7 @@ export async function generateQuote(
         Authorization: `Bearer ${process.env.DEEPSEEK_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "deepseek-chat",
+        model: DEEPSEEK_MODEL,
         temperature: 0.8,
         response_format: { type: "json_object" },
         messages: [
@@ -97,7 +99,7 @@ export async function validateQuote(
         Authorization: `Bearer ${process.env.DEEPSEEK_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "deepseek-chat",
+        model: DEEPSEEK_MODEL,
         temperature: 0.3,
         response_format: { type: "json_object" },
         messages: [
@@ -162,7 +164,7 @@ export async function fixQuote(
         Authorization: `Bearer ${process.env.DEEPSEEK_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "deepseek-chat",
+        model: DEEPSEEK_MODEL,
         temperature: 0.3,
         response_format: { type: "json_object" },
         messages: [

@@ -5,7 +5,7 @@ export function ShareButton({ text }: { text: string }) {
   return (
     <button
       onClick={() => navigator.clipboard.writeText(text)}
-      className="px-4 py-2 border border-ink/20 rounded hover:bg-cream transition-colors text-ink-light"
+      className="border border-ink/20 bg-cream/70 px-5 py-3 text-ink-light hover:border-cinnabar/40 hover:text-cinnabar"
     >
       分享
     </button>

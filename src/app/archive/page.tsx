@@ -53,33 +53,47 @@ export default async function ArchivePage() {
 
   if (archive.length === 0) {
     return (
-      <div className="text-center py-20">
-        <p className="text-ink-light">暂无归档内容</p>
+      <div className="mx-auto max-w-3xl border-y border-ink/15 py-20 text-center">
+        <p className="text-xs tracking-[0.34em] text-cinnabar">ARCHIVE</p>
+        <h1 className="mt-6 text-4xl">暂无归档内容</h1>
+        <p className="mt-4 font-[family-name:var(--font-serif-en)] text-ink-light">
+          Daily readings will appear here once generated.
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-10">
-      <h1 className="text-2xl font-semibold text-center tracking-wider">
-        归档 · Archive
-      </h1>
+    <div className="mx-auto max-w-5xl space-y-12">
+      <header className="grid grid-cols-1 gap-6 border-y border-ink/15 py-10 md:grid-cols-[0.7fr_1.3fr] md:items-end">
+        <div>
+          <p className="text-xs tracking-[0.34em] text-cinnabar">ARCHIVE</p>
+          <h1 className="mt-4 text-5xl leading-none md:text-7xl">归档</h1>
+        </div>
+        <p className="max-w-[58ch] font-[family-name:var(--font-serif-en)] text-base leading-8 text-ink-light md:justify-self-end">
+          A quiet index of classical sentences, ordered by date for slow
+          return visits.
+        </p>
+      </header>
 
       {archive.map((group) => (
-        <section key={group.month} className="space-y-3">
-          <h2 className="text-sm font-semibold text-cinnabar tracking-wider pb-2 ink-border">
+        <section
+          key={group.month}
+          className="grid grid-cols-1 gap-5 md:grid-cols-[12rem_1fr]"
+        >
+          <h2 className="text-sm font-semibold tracking-[0.28em] text-cinnabar">
             {group.label}
           </h2>
-          <div className="space-y-2">
+          <div className="divide-y divide-ink/10 border-y border-ink/10">
             {group.quotes.map((q) => (
               <Link
                 key={q.date}
                 href={`/archive/${q.date}`}
-                className="book-card block p-4 hover:bg-parchment/50 transition-colors"
+                className="group block py-5 hover:bg-cream/45 md:px-5"
               >
-                <div className="flex items-start justify-between gap-4">
+                <div className="grid grid-cols-[1fr_auto] items-start gap-4">
                   <div className="flex-1 min-w-0">
-                    <p className="classical-text text-base truncate">
+                    <p className="text-2xl leading-relaxed tracking-[0.08em] group-hover:text-cinnabar md:text-3xl">
                       {q.quoteZh.split("，")[0]}
                       {q.quoteZh.includes("，") ? "，" : ""}
                       {q.quoteZh.split("，")[1]?.split("。")[0]
@@ -90,7 +104,7 @@ export default async function ArchivePage() {
                       {q.source} · {q.author}
                     </p>
                   </div>
-                  <span className="text-xs text-ink-light/60 whitespace-nowrap">
+                  <span className="font-[family-name:var(--font-serif-en)] text-sm italic text-ink-light/70 whitespace-nowrap">
                     {q.date.slice(5)}
                   </span>
                 </div>

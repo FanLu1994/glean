@@ -54,7 +54,7 @@ export default async function VerifyPage({ searchParams }: VerifyPageProps) {
 
   return (
     <div className="text-center py-20 space-y-2">
-      <p className="text-lg">🎉 订阅成功！</p>
+      <p className="text-lg">订阅成功！</p>
       <p className="text-sm text-ink-light">
         Subscription confirmed! You&apos;ll receive daily quotes.
       </p>
