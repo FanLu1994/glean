@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">拾句 favicon</title>
+  <desc id="desc">A cinnabar seal with the Chinese character 拾.</desc>
+  <rect width="64" height="64" rx="12" fill="#9f4b3f" />
+  <rect x="6.5" y="6.5" width="51" height="51" rx="7" fill="none" stroke="#f7f1e8" stroke-width="2.5" opacity="0.72" />
+  <text
+    x="32"
+    y="45"
+    fill="#fffdf8"
+    font-family="Songti SC, SimSun, Noto Serif CJK SC, serif"
+    font-size="34"
+    font-weight="700"
+    text-anchor="middle"
+  >拾</text>
+</svg>

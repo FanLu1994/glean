@@ -11,9 +11,6 @@ export default function SubscribePage() {
         <h1 className="mt-5 max-w-[11ch] text-4xl leading-tight md:text-5xl">
           每日一句，慢读入心
         </h1>
-        <p className="mt-7 max-w-[58ch] text-base leading-8 text-ink-light">
-          每天一条古文原句，配拼音、释义、英译和现代使用场景。邮件尽量克制，只把值得反复读的一句送到你面前。
-        </p>
         <p className="mt-5 max-w-[58ch] font-[family-name:var(--font-serif-en)] text-base leading-8 text-ink-light">
           A daily classical Chinese sentence with pinyin, translation, and
           practical context.
