@@ -2,11 +2,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateDailyQuoteForDate } from "@/lib/generate-daily-quote";
 
+export const maxDuration = 60;
+
 export async function GET(request: NextRequest) {
   // Verify cron secret
   const authHeader = request.headers.get("authorization");
-  const secret = authHeader?.replace("Bearer ", "");
-  if (secret !== process.env.CRON_SECRET) {
+  const cronSecret = process.env.CRON_SECRET;
+
+  if (!cronSecret) {
+    return NextResponse.json(
+      { error: "CRON_SECRET is not configured" },
+      { status: 500 }
+    );
+  }
+
+  if (authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

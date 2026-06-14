@@ -4,9 +4,22 @@ import { db } from "@/db";
 import { subscribers } from "@/db/schema";
 import { and, eq, isNull } from "drizzle-orm";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+
+let resendInstance: Resend | null = null;
+
+function getResend() {
+  if (!resendInstance) {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      throw new Error("RESEND_API_KEY is not configured");
+    }
+
+    resendInstance = new Resend(apiKey);
+  }
+
+  return resendInstance;
+}
 
 interface QuoteData {
   quote_zh: string;
@@ -111,7 +124,7 @@ export async function sendVerificationEmail(
 ) {
   const verifyUrl = `${BASE_URL}/subscribe/verify?token=${token}`;
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: "拾句 Glean <glean@yourdomain.com>",
     to: email,
     subject:
@@ -148,7 +161,7 @@ export async function sendDailyEmail(quote: QuoteData) {
           ? buildEnglishEmailHtml(quote, token)
           : buildChineseEmailHtml(quote, token);
 
-      return resend.emails.send({
+      return getResend().emails.send({
         from:
           sub.locale === "en"
             ? "Glean <glean@yourdomain.com>"
