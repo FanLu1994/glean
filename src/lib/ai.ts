@@ -20,6 +20,8 @@ export interface GeneratedQuote {
 interface ValidationResult {
   pass: boolean;
   issues: string[];
+  commonness_score?: number;
+  commonness_reason?: string;
   fixes?: Partial<GeneratedQuote>;
 }
 
@@ -49,7 +51,7 @@ export async function generateQuote(
           { role: "system", content: SYSTEM_PROMPT },
           {
             role: "user",
-            content: `请从《${input.source}》中选取一句经典的古文名句，生成以下JSON格式的完整内容：
+            content: `请从《${input.source}》中选取一句古文原句，生成以下JSON格式的完整内容：
 
 {
   "quote_zh": "古文原文（必须是真实存在的原文，不能编造）",
@@ -68,7 +70,9 @@ export async function generateQuote(
 1. quote_zh 必须是《${input.source}》中真实存在的原文
 2. source 要具体到篇名
 3. theme_keywords 提供3-5个主题关键词
-4. 所有文本都要高质量、有深度`,
+4. 优先选择真实、完整、含义清晰，但没有被教材、社媒、名言摘录过度使用的句子
+5. 避免最常见、最模板化、最鸡汤化的名句；但不要为了冷门选择晦涩残句或牺牲准确性
+6. 所有文本都要高质量、有深度`,
           },
         ],
       }),
@@ -118,6 +122,7 @@ export async function validateQuote(
 4. quote_en 翻译是否优雅（信达雅）？
 5. scenario 是否实用且真实？
 6. 内容是否与近期主题过于相似？
+7. quote_zh 是否过于常见、过度传播、教材化或社媒鸡汤化？
 
 近期主题关键词：
 ${recentKeywords.map((kws) => kws.join(", ")).join("\n")}
@@ -129,11 +134,15 @@ ${JSON.stringify(quote, null, 2)}
 {
   "pass": true/false,
   "issues": ["具体问题描述1", "问题描述2"],
+  "commonness_score": 1-5,
+  "commonness_reason": "对常见度评分的简要说明",
   "fixes": { "field_name": "corrected_value" }
 }
 
 如果只是小问题（如错别字、翻译润色），请给出fixes并设pass为true。
-如果是根本性问题（如原文不存在、严重语义重复），设pass为false。`,
+如果是根本性问题（如原文不存在、严重语义重复），设pass为false。
+commonness_score 评分：1=较少见但好懂，2=适中且有辨识度，3=常见但仍可接受，4=明显大众化，5=高度滥用。
+不要仅因为 commonness_score 高就把 pass 设为 false；常见度由调用方决定是否重试。`,
           },
         ],
       }),

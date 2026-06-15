@@ -12,6 +12,8 @@ import {
 import { sendDailyEmail } from "@/lib/email";
 
 const MAX_ATTEMPTS = 5;
+const COMMONNESS_RETRY_ATTEMPTS = 3;
+const COMMONNESS_REJECT_THRESHOLD = 4;
 const generationInFlight = new Set<string>();
 
 type GenerateDailyQuoteResult =
@@ -117,6 +119,24 @@ export async function generateDailyQuoteForDate(
           quoteHash: await hashQuote(generated.quote_zh),
           status: "rejected_quality",
           rejectReason: validation.issues.join("; "),
+          attempt,
+        });
+        recentSources.add(selectedSource);
+        continue;
+      }
+
+      if (
+        attempt <= COMMONNESS_RETRY_ATTEMPTS &&
+        (validation.commonness_score ?? 0) >= COMMONNESS_REJECT_THRESHOLD
+      ) {
+        await db.insert(generationLog).values({
+          date,
+          sourceTried: selectedSource,
+          quoteHash: await hashQuote(generated.quote_zh),
+          status: "rejected_quality",
+          rejectReason:
+            validation.commonness_reason ||
+            `Quote commonness score ${validation.commonness_score}`,
           attempt,
         });
         recentSources.add(selectedSource);
