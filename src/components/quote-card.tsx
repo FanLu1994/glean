@@ -1,5 +1,6 @@
 // src/components/quote-card.tsx
 import type { DailyQuote } from "@/db/schema";
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { ShareButton } from "./share-button";
 
@@ -21,12 +22,18 @@ export function QuoteCard({
     month: "long",
     day: "numeric",
   });
+  const quoteLength = Array.from(quote.quoteZh.replace(/\s/g, "")).length;
+  const quoteStyle = {
+    "--quote-scale": Math.max(0.62, Math.min(1, Math.sqrt(18 / quoteLength))),
+  } as CSSProperties;
 
   return (
     <article className="mx-auto max-w-4xl space-y-14 lg:space-y-16">
       <section className="py-12 md:py-20">
         <div className="mx-auto max-w-3xl px-0 text-center">
-          <blockquote className="classical-text">{quote.quoteZh}</blockquote>
+          <blockquote className="classical-text" style={quoteStyle}>
+            {quote.quoteZh}
+          </blockquote>
           <p className="pinyin-text mx-auto mt-10 max-w-2xl text-base leading-8">
             {quote.pinyin}
           </p>
