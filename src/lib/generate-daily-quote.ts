@@ -4,7 +4,6 @@ import { eq } from "drizzle-orm";
 import { pickRandomSource } from "@/lib/sources";
 import { generateQuote, validateQuote, fixQuote } from "@/lib/ai";
 import {
-  getRecentSources,
   getRecentKeywords,
   isDuplicateQuote,
   hashQuote,
@@ -80,15 +79,11 @@ export async function generateDailyQuoteForDate(
     return { success: false, date, error: "AI generation is not configured" };
   }
 
-  const recentSources = await getRecentSources(60);
   const recentKeywords = await getRecentKeywords(90);
   let lastGenerated: Awaited<ReturnType<typeof generateQuote>> | null = null;
 
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-    let selectedSource = pickRandomSource(recentSources);
-    if (!selectedSource) {
-      selectedSource = pickRandomSource(await getRecentSources(30));
-    }
+    const selectedSource = pickRandomSource(new Set());
 
     if (!selectedSource) {
       return { success: false, date, error: "No sources available" };
@@ -107,7 +102,6 @@ export async function generateDailyQuoteForDate(
           rejectReason: "Duplicate text detected",
           attempt,
         });
-        recentSources.add(selectedSource);
         continue;
       }
 
@@ -121,7 +115,6 @@ export async function generateDailyQuoteForDate(
           rejectReason: validation.issues.join("; "),
           attempt,
         });
-        recentSources.add(selectedSource);
         continue;
       }
 
@@ -139,7 +132,6 @@ export async function generateDailyQuoteForDate(
             `Quote commonness score ${validation.commonness_score}`,
           attempt,
         });
-        recentSources.add(selectedSource);
         continue;
       }
 
