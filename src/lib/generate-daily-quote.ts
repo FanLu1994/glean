@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { dailyQuotes, generationLog } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { pickRandomSource } from "@/lib/sources";
 import { generateQuote, validateQuote, fixQuote } from "@/lib/ai";
 import {
@@ -29,6 +29,22 @@ export function canGenerateDailyQuote() {
       process.env.DEEPSEEK_API_KEY &&
       process.env.DEEPSEEK_API_KEY !== "sk-xxx"
   );
+}
+
+async function sendDailyEmailOnce(
+  date: string,
+  quote: Parameters<typeof sendDailyEmail>[0]
+) {
+  const [sent] = await db
+    .select({ id: generationLog.id })
+    .from(generationLog)
+    .where(and(eq(generationLog.date, date), eq(generationLog.status, "email_sent")))
+    .limit(1);
+
+  if (sent) return;
+
+  await sendDailyEmail(quote);
+  await db.insert(generationLog).values({ date, status: "email_sent", attempt: 0 });
 }
 
 async function insertDailyQuote(
@@ -61,12 +77,32 @@ export async function generateDailyQuoteForDate(
   date = getTodayDate()
 ): Promise<GenerateDailyQuoteResult> {
   const [existing] = await db
-    .select({ id: dailyQuotes.id, quoteZh: dailyQuotes.quoteZh, source: dailyQuotes.source })
+    .select()
     .from(dailyQuotes)
     .where(eq(dailyQuotes.date, date))
     .limit(1);
 
   if (existing) {
+    try {
+      await sendDailyEmailOnce(date, {
+        quote_zh: existing.quoteZh,
+        quote_en: existing.quoteEn,
+        pinyin: existing.pinyin,
+        source: existing.source,
+        author: existing.author,
+        explanation_zh: existing.explanationZh,
+        explanation_en: existing.explanationEn,
+        scenario_zh: existing.scenarioZh,
+        scenario_en: existing.scenarioEn,
+      });
+    } catch (error) {
+      return {
+        success: false,
+        date,
+        error: error instanceof Error ? error.message : "Failed to send daily email",
+      };
+    }
+
     return {
       success: true,
       date,
@@ -159,9 +195,15 @@ export async function generateDailyQuoteForDate(
         attempt,
       });
 
-      sendDailyEmail(finalQuote).catch((err) =>
-        console.error("Failed to send daily email:", err)
-      );
+      try {
+        await sendDailyEmailOnce(date, finalQuote);
+      } catch (error) {
+        return {
+          success: false,
+          date,
+          error: error instanceof Error ? error.message : "Failed to send daily email",
+        };
+      }
 
       return {
         success: true,
@@ -187,9 +229,15 @@ export async function generateDailyQuoteForDate(
     const inserted = await insertDailyQuote(date, lastGenerated);
 
     if (inserted) {
-      sendDailyEmail(lastGenerated).catch((err) =>
-        console.error("Failed to send daily email (degradation):", err)
-      );
+      try {
+        await sendDailyEmailOnce(date, lastGenerated);
+      } catch (error) {
+        return {
+          success: false,
+          date,
+          error: error instanceof Error ? error.message : "Failed to send daily email",
+        };
+      }
     }
 
     return {

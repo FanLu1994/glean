@@ -21,6 +21,19 @@ function getResend() {
   return resendInstance;
 }
 
+function getFromEmail() {
+  const from = process.env.RESEND_FROM_EMAIL;
+  if (!from) throw new Error("RESEND_FROM_EMAIL is not configured");
+  return from;
+}
+
+async function sendEmail(
+  options: Parameters<ReturnType<typeof getResend>["emails"]["send"]>[0]
+) {
+  const { error } = await getResend().emails.send(options);
+  if (error) throw new Error(error.message);
+}
+
 interface QuoteData {
   quote_zh: string;
   pinyin: string;
@@ -124,8 +137,8 @@ export async function sendVerificationEmail(
 ) {
   const verifyUrl = `${BASE_URL}/subscribe/verify?token=${token}`;
 
-  await getResend().emails.send({
-    from: "拾句 Glean <glean@yourdomain.com>",
+  await sendEmail({
+    from: getFromEmail(),
     to: email,
     subject:
       locale === "zh"
@@ -161,11 +174,8 @@ export async function sendDailyEmail(quote: QuoteData) {
           ? buildEnglishEmailHtml(quote, token)
           : buildChineseEmailHtml(quote, token);
 
-      return getResend().emails.send({
-        from:
-          sub.locale === "en"
-            ? "Glean <glean@yourdomain.com>"
-            : "拾句 <glean@yourdomain.com>",
+      return sendEmail({
+        from: getFromEmail(),
         to: sub.email,
         subject:
           sub.locale === "en"
@@ -178,6 +188,6 @@ export async function sendDailyEmail(quote: QuoteData) {
 
   const failures = results.filter((r) => r.status === "rejected");
   if (failures.length > 0) {
-    console.error(`Failed to send ${failures.length}/${results.length} emails`);
+    throw new Error(`Failed to send ${failures.length}/${results.length} emails`);
   }
 }
