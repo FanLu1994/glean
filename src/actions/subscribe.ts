@@ -23,35 +23,35 @@ export async function subscribeAction(
     return { error: "Invalid locale." };
   }
 
-  const [existing] = await db
-    .select()
-    .from(subscribers)
-    .where(eq(subscribers.email, email))
-    .limit(1);
-
-  if (existing?.verified) {
-    return { success: "您已订阅！ / You're already subscribed!" };
-  }
-
-  const token = crypto.randomUUID();
-
-  if (existing) {
-    await db
-      .update(subscribers)
-      .set({ verificationToken: token, locale, unsubscribedAt: null })
-      .where(eq(subscribers.email, email));
-  } else {
-    await db.insert(subscribers).values({
-      email,
-      locale,
-      verificationToken: token,
-    });
-  }
-
   try {
+    const [existing] = await db
+      .select()
+      .from(subscribers)
+      .where(eq(subscribers.email, email))
+      .limit(1);
+
+    if (existing?.verified) {
+      return { success: "您已订阅！ / You're already subscribed!" };
+    }
+
+    const token = crypto.randomUUID();
+
+    if (existing) {
+      await db
+        .update(subscribers)
+        .set({ verificationToken: token, locale, unsubscribedAt: null })
+        .where(eq(subscribers.email, email));
+    } else {
+      await db.insert(subscribers).values({
+        email,
+        locale,
+        verificationToken: token,
+      });
+    }
+
     await sendVerificationEmail(email, token, locale);
   } catch (e) {
-    console.error("Failed to send verification email:", e);
+    console.error("[subscribe] failed:", e);
     return { error: "邮件发送失败，请稍后重试 / Failed to send email. Try again later." };
   }
 

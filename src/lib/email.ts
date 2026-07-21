@@ -30,8 +30,13 @@ function getFromEmail() {
 async function sendEmail(
   options: Parameters<ReturnType<typeof getResend>["emails"]["send"]>[0]
 ) {
-  const { error } = await getResend().emails.send(options);
-  if (error) throw new Error(error.message);
+  const { data, error } = await getResend().emails.send(options);
+  if (error) {
+    console.error("[email] send failed:", error);
+    throw new Error(error.message);
+  }
+
+  console.info(`[email] sent: ${data?.id ?? "unknown id"}`);
 }
 
 interface QuoteData {
