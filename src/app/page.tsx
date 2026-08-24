@@ -69,7 +69,7 @@ export default async function HomePage() {
   const { quote, previousDate, isToday, today } = await getTodayQuote();
   const canAutoGenerate = canGenerateDailyQuote();
 
-  if (!isToday && canAutoGenerate) {
+  if (canAutoGenerate) {
     after(() => generateDailyQuoteOnce(today));
   }
 

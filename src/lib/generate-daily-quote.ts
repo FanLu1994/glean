@@ -38,13 +38,24 @@ async function sendDailyEmailOnce(
   const [sent] = await db
     .select({ id: generationLog.id })
     .from(generationLog)
-    .where(and(eq(generationLog.date, date), eq(generationLog.status, "email_sent")))
+    .where(
+      and(
+        eq(generationLog.date, date),
+        eq(generationLog.status, "daily_email_delivered")
+      )
+    )
     .limit(1);
 
   if (sent) return;
 
-  await sendDailyEmail(quote);
-  await db.insert(generationLog).values({ date, status: "email_sent", attempt: 0 });
+  const sentCount = await sendDailyEmail(quote);
+  if (sentCount === 0) return;
+
+  await db.insert(generationLog).values({
+    date,
+    status: "daily_email_delivered",
+    attempt: 0,
+  });
 }
 
 async function insertDailyQuote(
@@ -178,6 +189,17 @@ export async function generateDailyQuoteForDate(
 
       const inserted = await insertDailyQuote(date, finalQuote);
       if (!inserted) {
+        try {
+          await sendDailyEmailOnce(date, finalQuote);
+        } catch (error) {
+          return {
+            success: false,
+            date,
+            error:
+              error instanceof Error ? error.message : "Failed to send daily email",
+          };
+        }
+
         return {
           success: true,
           date,
@@ -226,18 +248,16 @@ export async function generateDailyQuoteForDate(
 
   if (lastGenerated) {
     console.warn(`All ${MAX_ATTEMPTS} attempts failed, using last generated result`);
-    const inserted = await insertDailyQuote(date, lastGenerated);
+    await insertDailyQuote(date, lastGenerated);
 
-    if (inserted) {
-      try {
-        await sendDailyEmailOnce(date, lastGenerated);
-      } catch (error) {
-        return {
-          success: false,
-          date,
-          error: error instanceof Error ? error.message : "Failed to send daily email",
-        };
-      }
+    try {
+      await sendDailyEmailOnce(date, lastGenerated);
+    } catch (error) {
+      return {
+        success: false,
+        date,
+        error: error instanceof Error ? error.message : "Failed to send daily email",
+      };
     }
 
     return {

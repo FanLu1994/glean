@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateDailyQuoteForDate } from "@/lib/generate-daily-quote";
 
-export const maxDuration = 60;
+export const maxDuration = 300;
 
 export async function GET(request: NextRequest) {
   // Verify cron secret

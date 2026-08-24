@@ -51,6 +51,33 @@ interface QuoteData {
   scenario_en: string;
 }
 
+type SubscriberEmailTarget = {
+  email: string;
+  locale: string;
+  verificationToken: string | null;
+};
+
+async function sendQuoteToSubscriber(
+  sub: SubscriberEmailTarget,
+  quote: QuoteData
+) {
+  const token = sub.verificationToken ?? "";
+  const html =
+    sub.locale === "en"
+      ? buildEnglishEmailHtml(quote, token)
+      : buildChineseEmailHtml(quote, token);
+
+  await sendEmail({
+    from: getFromEmail(),
+    to: sub.email,
+    subject:
+      sub.locale === "en"
+        ? `Daily Glean: ${quote.quote_en.slice(0, 50)}...`
+        : `每日拾句：${quote.quote_zh.slice(0, 15)}...`,
+    html,
+  });
+}
+
 function buildChineseEmailHtml(
   quote: QuoteData,
   token: string
@@ -156,7 +183,7 @@ export async function sendVerificationEmail(
   });
 }
 
-/** Send daily quote to all verified subscribers */
+/** Send daily quote to all verified subscribers. Returns number of emails sent. */
 export async function sendDailyEmail(quote: QuoteData) {
   const activeSubscribers = await db
     .select()
@@ -168,31 +195,21 @@ export async function sendDailyEmail(quote: QuoteData) {
       )
     );
 
-  if (activeSubscribers.length === 0) return;
+  if (activeSubscribers.length === 0) {
+    console.info("[email] skip daily send: no verified subscribers");
+    return 0;
+  }
 
   // Send individually so each gets their own unsubscribe link
   const results = await Promise.allSettled(
-    activeSubscribers.map((sub) => {
-      const token = sub.verificationToken ?? "";
-      const html =
-        sub.locale === "en"
-          ? buildEnglishEmailHtml(quote, token)
-          : buildChineseEmailHtml(quote, token);
-
-      return sendEmail({
-        from: getFromEmail(),
-        to: sub.email,
-        subject:
-          sub.locale === "en"
-            ? `Daily Glean: ${quote.quote_en.slice(0, 50)}...`
-            : `每日拾句：${quote.quote_zh.slice(0, 15)}...`,
-        html,
-      });
-    })
+    activeSubscribers.map((sub) => sendQuoteToSubscriber(sub, quote))
   );
 
   const failures = results.filter((r) => r.status === "rejected");
   if (failures.length > 0) {
     throw new Error(`Failed to send ${failures.length}/${results.length} emails`);
   }
+
+  console.info(`[email] daily send completed: ${results.length} emails`);
+  return results.length;
 }
